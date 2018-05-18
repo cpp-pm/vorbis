@@ -1,4 +1,11 @@
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.0)
+
+include(cmake/HunterGate.cmake)
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.21.3.tar.gz"
+    SHA1 "67346d2d3958fe293a33f3eda59da295a9af9bf5"
+)
+
 project(vorbis)
 
 # Required modules
@@ -52,18 +59,24 @@ endfunction()
 
 message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
 
-# Find ogg dependency
-if(NOT OGG_ROOT)
-    find_package(PkgConfig QUIET)
-    pkg_check_modules(PC_OGG QUIET ogg)
-    find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${PC_OGG_INCLUDE_DIRS} PATH_SUFFIXES ogg)
-    find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
+if(HUNTER_ENABLED)
+    hunter_add_package(libogg)
+    find_package(libogg CONFIG REQUIRED)
+    set(OGG_LIBRARIES libogg::ogg)
 else()
-    find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${OGG_ROOT}/include PATH_SUFFIXES ogg)
-    find_library(OGG_LIBRARIES NAMES ogg HINTS ${OGG_ROOT}/lib ${OGG_ROOT}/lib64)
+    # Find ogg dependency
+    if(NOT OGG_ROOT)
+        find_package(PkgConfig QUIET)
+        pkg_check_modules(PC_OGG QUIET ogg)
+        find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${PC_OGG_INCLUDE_DIRS} PATH_SUFFIXES ogg)
+        find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
+    else()
+        find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${OGG_ROOT}/include PATH_SUFFIXES ogg)
+        find_library(OGG_LIBRARIES NAMES ogg HINTS ${OGG_ROOT}/lib ${OGG_ROOT}/lib64)
+    endif()
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(OGG DEFAULT_MSG OGG_INCLUDE_DIRS OGG_LIBRARIES)
 endif()
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(OGG DEFAULT_MSG OGG_INCLUDE_DIRS OGG_LIBRARIES)
 
 add_subdirectory(lib)
 
