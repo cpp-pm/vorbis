@@ -63,6 +63,7 @@ if(HUNTER_ENABLED)
     hunter_add_package(libogg)
     find_package(libogg CONFIG REQUIRED)
     set(OGG_LIBRARIES libogg::ogg)
+    get_target_property(OGG_INCLUDE_DIRS libogg::ogg INTERFACE_INCLUDE_DIRECTORIES)
 else()
     # Find ogg dependency
     if(NOT OGG_ROOT)
