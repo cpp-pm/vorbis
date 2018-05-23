@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 include(cmake/HunterGate.cmake)
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.21.3.tar.gz"
-    SHA1 "67346d2d3958fe293a33f3eda59da295a9af9bf5"
+    URL "https://github.com/ruslo/hunter/archive/v0.21.11.tar.gz"
+    SHA1 "db4f9671ba1d026e08e1f0119fb2dbbc5578d1a1"
 )
 
 project(vorbis)
@@ -63,6 +63,7 @@ if(HUNTER_ENABLED)
     hunter_add_package(libogg)
     find_package(libogg CONFIG REQUIRED)
     set(OGG_LIBRARIES libogg::ogg)
+    get_target_property(OGG_INCLUDE_DIRS libogg::ogg INTERFACE_INCLUDE_DIRECTORIES)
 else()
     # Find ogg dependency
     if(NOT OGG_ROOT)
